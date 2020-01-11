@@ -7,5 +7,19 @@
       "url": "http://json.schemastore.org/chrome-manifest"
     }
   ],
-  "editor.formatOnSave": true
+  "editor.autoClosingOvertype": "never",
+  "editor.autoClosingQuotes": "never",
+  "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.formatOnSave": true,
+  "editor.rulers": [80],
+  "workbench.colorCustomizations": {
+    "editorRuler.foreground": "#4a0a63"
+  },
+  "code-runner.clearPreviousOutput": true,
+  "cSpell.words": [
+    "Interop",
+    "artdeco",
+    "linkedin"
+  ]
 }

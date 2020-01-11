@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
+    "esModuleInterop": true,
+    "noEmitOnError": true,
     "noImplicitAny": false,
     "sourceMap": false,
-    "rootDir": "src",
+    "module": "commonjs",
     "outDir": "dist/js",
-    "noEmitOnError": true,
+    "rootDir": "src",
+    "target": "es6",
     "typeRoots": ["node_modules/@types"]
   }
 }
