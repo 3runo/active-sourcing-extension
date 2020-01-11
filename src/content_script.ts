@@ -1,35 +1,54 @@
+import * as browser from 'webextension-polyfill';
+
 const d: Document = window.document;
-const contactInfoSel = 'a[data-control-name="contact_see_more"]';
-const contactInfoCloseSel = 'button[aria-label="Dismiss"]';
-const contactInfoModalSel = '#artdeco-modal-outlet';
 
-const profileName = d.title.replace('| LinkedIn', '').trim();
+function reactToContactInfoChanges(
+  mutations: MutationRecord[],
+  observerRef: MutationObserver
+) {
+  const dismissBtnS = 'button[aria-label="Dismiss"]';
 
-// Open contact info modal
-const $seeMoreLink: HTMLElement = d.querySelector(contactInfoSel);
-if ($seeMoreLink) $seeMoreLink.click();
-
-// MutationObserver
-function onContactInfoChange(record: MutationRecord[], ref: MutationObserver) {
-  for (let mutation of record) {
+  for (let mutation of mutations) {
     if (mutation.type === 'childList') {
-      const $target = mutation.target as HTMLElement;
-      const $links = $target.querySelectorAll('a');
-      const $closeBtn: HTMLElement = $target.querySelector(contactInfoCloseSel);
+      let $target = mutation.target as HTMLElement;
+      let $links = $target.querySelectorAll('a');
+      let $closeBtn: HTMLElement = $target.querySelector(dismissBtnS);
 
       if ($links.length > 0 && $closeBtn) {
         $closeBtn.click();
-        ref.disconnect();
+        observerRef.disconnect();
         console.log($links);
+        // Implementing contact info extraction ...
       }
-
-      console.log('A child node has been added or removed.', mutation);
     }
   }
 }
-const contactInfoObserver = new MutationObserver(onContactInfoChange);
-const observedNode = d.querySelector(contactInfoModalSel);
-const config = { attributes: false, childList: true, subtree: true };
-contactInfoObserver.observe(d.querySelector(contactInfoModalSel), config);
 
-console.log('profileName =>', profileName);
+function scanLinkedIn() {
+  const seeMoreLinkS = 'a[data-control-name="contact_see_more"]';
+  const contactInfoModalS = '#artdeco-modal-outlet';
+  const profileName = d.title.replace('| LinkedIn', '').trim();
+  const observerConfig = { attributes: false, childList: true, subtree: true };
+  const $seeMoreLink: HTMLElement = d.querySelector(seeMoreLinkS);
+  const $observedNode = d.querySelector(contactInfoModalS);
+  const contactInfoObserver = new MutationObserver(reactToContactInfoChanges);
+
+  // Start contact info modal observer
+  contactInfoObserver.observe($observedNode, observerConfig);
+
+  // Open contact info modal
+  if ($seeMoreLink != null) {
+    $seeMoreLink.click();
+  }
+
+  console.log('profileName =>', profileName);
+}
+
+function onMessageReceived(message: string) {
+  // if (message === 'scan_xing_dom') {}
+  if (message === 'scan_linkedin_dom') {
+    scanLinkedIn();
+  }
+}
+
+browser.runtime.onMessage.addListener(onMessageReceived);

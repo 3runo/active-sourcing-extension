@@ -5,23 +5,34 @@
   "description": "Chrome Extension, TypeScript, Visual Studio Code",
   "version": "1.0",
 
+  "permissions": ["storage", "webNavigation", "activeTab", "<all_urls>"],
+
+  "background": {
+    "scripts": ["js/vendor.js", "js/background.js"]
+  },
+
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "img/16px.png",
+      "24": "img/24px.png",
+      "32": "img/32px.png",
+      "48": "img/48px.png"
+    }
+  },
+
   "options_ui": {
     "page": "options.html",
     "chrome_style": true
   },
 
-  "browser_action": {
-    "default_icon": "icons/16px.png",
-    "default_popup": "popup.html"
-  },
-
   "icons": {
-    "16": "icons/16px.png",
-    "24": "icons/24px.png",
-    "32": "icons/32px.png",
-    "48": "icons/48px.png",
-    "64": "icons/64px.png",
-    "128": "icons/128px.png"
+    "16": "img/16px.png",
+    "24": "img/24px.png",
+    "32": "img/32px.png",
+    "48": "img/48px.png",
+    "64": "img/64px.png",
+    "128": "img/128px.png"
   },
 
   "content_scripts": [
@@ -30,11 +41,5 @@
       "js": ["js/vendor.js", "js/content_script.js"],
       "run_at": "document_end"
     }
-  ],
-
-  "background": {
-    "scripts": ["js/vendor.js", "js/background.js"]
-  },
-
-  "permissions": ["storage", "webNavigation", "activeTab", "<all_urls>"]
+  ]
 }
