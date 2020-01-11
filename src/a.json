@@ -1,0 +1,48 @@
+{
+  "data": {
+    "firstName": "Gabriel",
+    "lastName": "Faria",
+    "occupation": "Senior Software Engineer | Personio",
+    "objectUrn": "urn:li:member:458670341",
+    "entityUrn": "urn:li:fs_miniProfile:ACoAABtWwQUBWSiEX0KY57PTUvbjYzl_X_ar2zQ",
+    "backgroundImage": null,
+    "publicIdentifier": "gabriel-faria",
+    "picture": {
+      "artifacts": [
+        {
+          "width": 100,
+          "fileIdentifyingUrlPathSegment": "100_100/0?e=1583971200&v=beta&t=PiRh0dtUTtzTWWDbEhG0IMKOxKtLSr5pqdzEVq-8tU0",
+          "expiresAt": 1583971200000,
+          "height": 100,
+          "$type": "com.linkedin.common.VectorArtifact"
+        },
+        {
+          "width": 200,
+          "fileIdentifyingUrlPathSegment": "200_200/0?e=1583971200&v=beta&t=fKS6X5n9OL1MppyLYCbbRR-dmyUCDvVVgjRohUn3qEw",
+          "expiresAt": 1583971200000,
+          "height": 200,
+          "$type": "com.linkedin.common.VectorArtifact"
+        },
+        {
+          "width": 400,
+          "fileIdentifyingUrlPathSegment": "400_400/0?e=1583971200&v=beta&t=2jA7uzZldqQqIr1XZkOle0SY4SjtvSzSlhZXWbnURnE",
+          "expiresAt": 1583971200000,
+          "height": 400,
+          "$type": "com.linkedin.common.VectorArtifact"
+        },
+        {
+          "width": 800,
+          "fileIdentifyingUrlPathSegment": "800_800/0?e=1583971200&v=beta&t=nqXpbV4Bt-ogNd-2XVMTxWte19uHATdrnFTW54xqceM",
+          "expiresAt": 1583971200000,
+          "height": 800,
+          "$type": "com.linkedin.common.VectorArtifact"
+        }
+      ],
+      "rootUrl": "https://media-exp1.licdn.com/dms/image/C4D03AQHk_V_TKuMeZA/profile-displayphoto-shrink_",
+      "$type": "com.linkedin.common.VectorImage"
+    },
+    "trackingId": "vwH7GO4mRcS28VVp/KK9cQ==",
+    "$type": "com.linkedin.voyager.identity.shared.MiniProfile"
+  },
+  "included": []
+}
