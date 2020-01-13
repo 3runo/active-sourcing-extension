@@ -1,7 +1,5 @@
 import * as browser from 'webextension-polyfill';
-import { curryN, compose } from 'lodash/fp';
-import { domainWhiteList } from './core/constants';
-import { findWhiteListedString } from './core/pure';
+import { isDomainAllowed } from './helpers';
 
 type InitParams = { previousVersion: string; reason: string };
 type NavParams = {
@@ -11,9 +9,6 @@ type NavParams = {
   timeStamp: number;
   url: string;
 };
-
-const findAllowedString = curryN(2, findWhiteListedString)(domainWhiteList);
-const isDomainAllowed = compose([Boolean, findAllowedString]);
 
 function initExtension(_: InitParams) {
   console.log(_);
