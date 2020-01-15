@@ -10,7 +10,7 @@ export function findWhiteListedString(whiteList: string[], fullStr: string) {
 }
 
 export function validateWhiteListEntry(
-  [head, ...rest]: string[],
+  [head, ...rest]: Array<string>,
   entry: string
 ): string | undefined {
   const isValid = comparePartialString(head, entry);
@@ -24,25 +24,33 @@ export function debug(arg: any) {
 }
 
 export function getTextNodes(element?: HTMLElement): Array<Node> {
-  if (element == null) return [];
+  if (!element) return [];
 
-  const walker = window.document.createTreeWalker;
-  let node: Node;
-  let array: Array<Node> = [];
-  let walk: TreeWalker = walker(element, NodeFilter.SHOW_TEXT, null, false);
+  let curr: Node;
+  let output: Array<Node> = [];
+  let walker: TreeWalker = window.document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false); // prettier-ignore
 
-  while ((node = walk.nextNode())) {
-    if (typeof node.textContent === 'string' && node.textContent.trim()) {
-      array.push(node);
+  while ((curr = walker.nextNode())) {
+    if (typeof curr.textContent === 'string' && curr.textContent.trim()) {
+      output.push(curr);
     }
   }
 
-  return array;
+  return output;
 }
-// let prefix: string = '';
-// console.log(node.parentElement.className.indexOf('header'))
-// console.log(node.parentElement.className.indexOf('contact-item'))
-// Impure
-// prefix =
-//   node.parentElement.className.indexOf('header') !== -1 ? 'header+' : 'item+';
-// array.push(prefix + node.textContent);
+
+export function setProp<T>(obj: T, key: string, value: any = ''): T {
+  if (Object.prototype.hasOwnProperty.call(obj, key)) {
+    return obj;
+  }
+
+  return { ...obj, [key]: value };
+}
+
+export function tryParse(str: string): Object {
+  try {
+    return JSON.parse(str);
+  } catch (error) {
+    return Object.create(null);
+  }
+}

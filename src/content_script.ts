@@ -1,6 +1,5 @@
 import * as browser from 'webextension-polyfill';
-import { findAllowedString } from './helpers';
-import { getTextNodes } from './helpers/pure';
+import { findAllowedString, getCodeData, getContactInfoText } from './helpers';
 
 const d: Document = window.document;
 const respond = browser.runtime.sendMessage;
@@ -16,10 +15,9 @@ function reactToContactInfoChanges(
       let $target = mutation.target as HTMLElement;
       let $closeBtn: HTMLElement = $target.querySelector(dismissBtnS);
       let $sectionInfo: HTMLElement = $target.querySelector('.section-info');
-      // let $links = $target.querySelectorAll('a');
-      // 'pv-profile-section__section-info section-info'
+
       if ($closeBtn != null && $sectionInfo != null) {
-        console.log('debug: ', getTextNodes($sectionInfo), $sectionInfo);
+        respond(getContactInfoText($sectionInfo));
         $closeBtn.click();
         observerRef.disconnect();
       }
@@ -28,21 +26,26 @@ function reactToContactInfoChanges(
 }
 
 function scanLinkedIn() {
-  const seeMoreLinkS = 'a[data-control-name="contact_see_more"]';
-  const contactInfoModalS = '#artdeco-modal-outlet';
   const profileName = d.title.replace('| LinkedIn', '').trim();
-  const observerConfig = { attributes: false, childList: true, subtree: true };
-  const $seeMoreLink: HTMLElement = d.querySelector(seeMoreLinkS);
-  const $observedNode = d.querySelector(contactInfoModalS);
-  const contactInfoObserver = new MutationObserver(reactToContactInfoChanges);
+  const $seeMoreLink: HTMLElement = d.querySelector('a[data-control-name="contact_see_more"]'); // prettier-ignore
+  const $observedNode = d.querySelector('#artdeco-modal-outlet');
+  const codeData = getCodeData(d.querySelectorAll('body > code'));
+
+  if (codeData != null) {
+    respond(codeData);
+  }
 
   if ($seeMoreLink != null && $observedNode != null) {
-    contactInfoObserver.observe($observedNode, observerConfig);
+    const config = { attributes: false, childList: true, subtree: true };
+    const contactInfoObserver = new MutationObserver(reactToContactInfoChanges);
+
+    contactInfoObserver.observe($observedNode, config);
     $seeMoreLink.click();
-    respond({ profileName });
   } else {
     respond({ err: 'linkedin_node_error' });
   }
+
+  respond({ profileName });
 }
 
 function onMessageReceived(message: string) {
