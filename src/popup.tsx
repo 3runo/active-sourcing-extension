@@ -18,6 +18,8 @@ type LProfile = TLCodeData & {
   im?: string;
   profileName?: string;
   yourProfile?: string;
+  education?: string | Array<string>;
+  location?: string;
 };
 
 class PopupApp extends React.Component<{}, State> {
@@ -58,7 +60,10 @@ class PopupApp extends React.Component<{}, State> {
   onScanDomainClick = () => {
     fetchTabs(activeTab).then(([firsTab]: Tabs) => {
       if (isDomainAllowed(firsTab.url)) {
-        browser.tabs.sendMessage(firsTab.id, firsTab.url);
+        browser.tabs
+          .sendMessage(firsTab.id, firsTab.url)
+          .then(console.info)
+          .catch(console.error);
       }
     });
   };

@@ -10,14 +10,11 @@ type NavParams = {
   url: string;
 };
 
-function initExtension(_: InitParams) {
-  console.log(_);
-}
+function initExtension(_: InitParams) {}
 
 function onWebNavigationCompleted({ parentFrameId, tabId, url }: NavParams) {
-  console.log(isDomainAllowed(url));
   if (parentFrameId !== -1 || !isDomainAllowed(url)) return;
-  console.log('green light');
+  // Either linkedin or xing
 }
 
 browser.runtime.onInstalled.addListener(initExtension);

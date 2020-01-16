@@ -1,6 +1,6 @@
 import { curryN, compose } from 'lodash/fp';
 import { domainWhiteList } from './constants';
-import { findWhiteListedString, getTextNodes, debug } from './pure';
+import { concatStringList, findWhiteListedString, getTextNodes } from './pure';
 import {
   categorizeContactInfoText,
   contactInfoTextsToObj,
@@ -18,11 +18,22 @@ const getContactInfoText = compose([
   getTextNodes,
 ]);
 
-const getCodeData: (list: NodeListOf<Element>) => TLCodeData = compose([
+const getDataFromCodeTag: (list: NodeListOf<Element>) => TLCodeData = compose([
   serializeDomData,
-  debug,
   findDomData,
   getTextFromNodes,
 ]);
 
-export { findAllowedString, getCodeData, getContactInfoText, isDomainAllowed };
+const getConcatenatedTextFrom: (e: HTMLElement) => Array<string> = compose([
+  concatStringList,
+  getTextFromNodes,
+  getTextNodes,
+]);
+
+export {
+  findAllowedString,
+  getConcatenatedTextFrom,
+  getContactInfoText,
+  getDataFromCodeTag,
+  isDomainAllowed,
+};

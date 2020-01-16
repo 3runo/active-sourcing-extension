@@ -1,4 +1,5 @@
 import { curryN } from 'lodash/fp';
+export type NodeList = NodeListOf<HTMLElement>;
 
 export function comparePartialString(fullStr: string, partialStr: string) {
   return fullStr.indexOf(partialStr) !== -1;
@@ -16,11 +17,6 @@ export function validateWhiteListEntry(
   const isValid = comparePartialString(head, entry);
   if (isValid) return entry;
   return rest.length < 1 ? undefined : validateWhiteListEntry(rest, entry);
-}
-
-export function debug(arg: any) {
-  console.log(arg);
-  return arg;
 }
 
 export function getTextNodes(element?: HTMLElement): Array<Node> {
@@ -53,4 +49,17 @@ export function tryParse(str: string): Object {
   } catch (error) {
     return Object.create(null);
   }
+}
+
+export function nodeListToArray(list: NodeList): Array<HTMLElement> {
+  return Array.prototype.slice.call(list);
+}
+
+export function concatStringList(list: Array<string>) {
+  return list.join('');
+}
+
+export function debug(arg: any) {
+  console.log(arg);
+  return arg;
 }

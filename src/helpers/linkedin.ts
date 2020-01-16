@@ -8,7 +8,7 @@ type RelevantMetaData = { plainId?: number; premiumSubscriber?: boolean };
 type RelevantProfileData = {
   firstName?: string;
   lastName?: string;
-  occupation?: string;
+  occupation?: string | Array<string>;
   publicIdentifier?: string;
   trackingId?: string;
 };

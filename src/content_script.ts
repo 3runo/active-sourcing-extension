@@ -1,8 +1,18 @@
 import * as browser from 'webextension-polyfill';
-import { findAllowedString, getCodeData, getContactInfoText } from './helpers';
+import {
+  findAllowedString,
+  getConcatenatedTextFrom,
+  getContactInfoText,
+  getDataFromCodeTag,
+} from './helpers';
+import { nodeListToArray, NodeList } from './helpers/pure';
 
 const d: Document = window.document;
 const respond = browser.runtime.sendMessage;
+
+function addStringReducer(acc: Array<any>, element: HTMLElement) {
+  return [...acc, getConcatenatedTextFrom(element)];
+}
 
 function reactToContactInfoChanges(
   mutations: MutationRecord[],
@@ -29,7 +39,7 @@ function scanLinkedIn() {
   const profileName = d.title.replace('| LinkedIn', '').trim();
   const $seeMoreLink: HTMLElement = d.querySelector('a[data-control-name="contact_see_more"]'); // prettier-ignore
   const $observedNode = d.querySelector('#artdeco-modal-outlet');
-  const codeData = getCodeData(d.querySelectorAll('body > code'));
+  const codeData = getDataFromCodeTag(d.querySelectorAll('body > code'));
 
   if (codeData != null) {
     respond(codeData);
@@ -48,9 +58,26 @@ function scanLinkedIn() {
   respond({ profileName });
 }
 
+function scanXing() {
+  const $name: HTMLElement = d.querySelector('[data-qa="malt-profile-display-name"]'); // prettier-ignore
+  const $occupation: NodeList = d.querySelectorAll('[data-qa="profile-occupation-work_experience"]'); // prettier-ignore
+  const $education: NodeList = d.querySelectorAll('[data-qa="profile-occupation-education"]'); // prettier-ignore
+  const $location: HTMLElement= d.querySelector('[data-qa="profile-location"]'); // prettier-ignore
+
+  respond({
+    profileName: getConcatenatedTextFrom($name),
+    occupation: nodeListToArray($occupation).reduce(addStringReducer, []),
+    education: nodeListToArray($education).reduce(addStringReducer, []),
+    location: getConcatenatedTextFrom($location),
+  });
+}
+
 function onMessageReceived(message: string) {
-  // if (message === 'www.xing.com') {}
-  if (findAllowedString(message) === 'www.linkedin.com') {
+  const whiteListedDomain = findAllowedString(message);
+
+  if (whiteListedDomain === 'www.xing.com') {
+    scanXing();
+  } else if (whiteListedDomain === 'www.linkedin.com') {
     scanLinkedIn();
   }
 }
