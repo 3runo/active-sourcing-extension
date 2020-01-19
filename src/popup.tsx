@@ -20,6 +20,7 @@ type LProfile = TLCodeData & {
   yourProfile?: string;
   education?: string | Array<string>;
   location?: string;
+  about?: string;
 };
 
 class PopupApp extends React.Component<{}, State> {
@@ -40,18 +41,19 @@ class PopupApp extends React.Component<{}, State> {
 
       this.setState((state) => {
         return {
+          about: data.about || state.about,
           birthday: data.birthday || state.birthday,
           email: data.email || state.email,
-          im: data.im || state.im,
-          profileName: data.profileName || state.profileName,
-          yourProfile: data.yourProfile || state.yourProfile,
           firstName: data.firstName || state.firstName,
+          im: data.im || state.im,
           lastName: data.lastName || state.lastName,
           occupation: data.occupation || state.occupation,
-          publicIdentifier: data.publicIdentifier || state.publicIdentifier,
-          trackingId: data.trackingId || state.trackingId,
           plainId: data.plainId || state.plainId,
           premiumSubscriber: data.premiumSubscriber || state.premiumSubscriber,
+          profileName: data.profileName || state.profileName,
+          publicIdentifier: data.publicIdentifier || state.publicIdentifier,
+          trackingId: data.trackingId || state.trackingId,
+          yourProfile: data.yourProfile || state.yourProfile,
         };
       });
     });

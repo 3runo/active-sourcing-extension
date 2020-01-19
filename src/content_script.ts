@@ -1,3 +1,4 @@
+import { replace } from 'lodash/fp';
 import * as browser from 'webextension-polyfill';
 import {
   findAllowedString,
@@ -5,7 +6,7 @@ import {
   getContactInfoText,
   getDataFromCodeTag,
 } from './helpers';
-import { nodeListToArray, NodeList } from './helpers/pure';
+import { nodeListToArray, NodeList, getTextNodes } from './helpers/pure';
 
 const d: Document = window.document;
 const respond = browser.runtime.sendMessage;
@@ -37,23 +38,37 @@ function reactToContactInfoChanges(
 
 function scanLinkedIn() {
   const profileName = d.title.replace('| LinkedIn', '').trim();
-  const $seeMoreLink: HTMLElement = d.querySelector('a[data-control-name="contact_see_more"]'); // prettier-ignore
-  const $observedNode = d.querySelector('#artdeco-modal-outlet');
-  const codeData = getDataFromCodeTag(d.querySelectorAll('body > code'));
+  const $contactSeeMoreLink: HTMLElement = d.querySelector('a[data-control-name="contact_see_more"]'); // prettier-ignore
+  const $contactObservedNode = d.querySelector('#artdeco-modal-outlet');
+  const domJsonData = getDataFromCodeTag(d.querySelectorAll('body > code'));
+  const $aboutParagraph: HTMLElement = d.querySelector('.pv-about-section > .pv-about__summary-text'); // prettier-ignore
+  const $aboutSeeLink: HTMLElement = d.querySelector('a.lt-line-clamp__more');
 
-  if (codeData != null) {
-    respond(codeData);
+  if (domJsonData != null) {
+    respond(domJsonData);
   }
 
-  if ($seeMoreLink != null && $observedNode != null) {
+  if ($aboutSeeLink != null) {
+    $aboutSeeLink.click();
+    const paragraph = getConcatenatedTextFrom($aboutParagraph);
+    const about = replace(`...${$aboutSeeLink.textContent}`, '', paragraph);
+
+    respond({ about });
+  }
+
+  if ($contactSeeMoreLink != null && $contactObservedNode != null) {
     const config = { attributes: false, childList: true, subtree: true };
     const contactInfoObserver = new MutationObserver(reactToContactInfoChanges);
 
-    contactInfoObserver.observe($observedNode, config);
-    $seeMoreLink.click();
+    contactInfoObserver.observe($contactObservedNode, config);
+    $contactSeeMoreLink.click();
   } else {
-    respond({ err: 'linkedin_node_error' });
+    respond({ err: 'linkedinContactInfoModalError' });
   }
+
+  // experience-section (3 last experiences)
+  // pv-skill-categories-section__top-skills pv-profile-section__section-info section-info pb1 (Skills & Endorsements)
+  // education
 
   respond({ profileName });
 }

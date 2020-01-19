@@ -24,7 +24,7 @@ const getDataFromCodeTag: (list: NodeListOf<Element>) => TLCodeData = compose([
   getTextFromNodes,
 ]);
 
-const getConcatenatedTextFrom: (e: HTMLElement) => Array<string> = compose([
+const getConcatenatedTextFrom: (e: HTMLElement) => string = compose([
   concatStringList,
   getTextFromNodes,
   getTextNodes,
