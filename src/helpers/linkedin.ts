@@ -47,17 +47,17 @@ export function contactInfoTextsToObj(data: Array<string>): KeyValueObj {
   return output;
 }
 
-export function getTextFromNodes(list: NodeListOf<Element>): Array<string> {
-  return Array.prototype.slice
-    .call(list)
-    .map((e: Element) => e.textContent.trim());
-}
-
 export function findDomData(list: Array<string>) {
   return list
     .filter((s: string) => s.includes('{"data":{'))
     .map(tryParse)
     .find((o: Object) => getOrFalse('data.firstName', o));
+}
+
+export function getTextFromNodes(list: NodeListOf<Element>): Array<string> {
+  return Array.prototype.slice
+    .call(list)
+    .map((e: Element) => e.textContent.trim());
 }
 
 export function serializeDomData(

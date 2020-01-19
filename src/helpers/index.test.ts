@@ -2,7 +2,7 @@ import { domainWhiteList } from './constants';
 import { findAllowedString } from './';
 
 describe('findAllowedString', () => {
-  it('should return undefined when a invalid input is provided', () => {
+  it('should return undefined when an invalid input is provided', () => {
     const result = findAllowedString('invalid');
     expect(result).toEqual(undefined);
   });
