@@ -63,3 +63,28 @@ export function debug(arg: any) {
   console.log(arg);
   return arg;
 }
+
+export function factorial(number: number) {
+  let result = 1;
+
+  for (let i = 2; i <= number; i = i + 1) {
+    result = result * i;
+  }
+
+  return result;
+}
+
+export function factorialRecursive(number: number) {
+  return number > 1 ? number * factorialRecursive(number - 1) : 1;
+}
+
+export function factorialRecursiveTCO(number: number, result = 1) {
+  return number === 0
+    ? result
+    : factorialRecursiveTCO(number - 1, number * result);
+}
+
+// implement merge sort
+// implement binary search
+
+export function binarySearch(arr, value) {}
