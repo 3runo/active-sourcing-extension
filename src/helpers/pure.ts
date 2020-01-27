@@ -1,6 +1,23 @@
 import { curryN } from 'lodash/fp';
 export type NodeList = NodeListOf<HTMLElement>;
 
+function defaultCompare(a: number, b: number) {
+  if (a === b) return 0;
+  return a < b ? -1 : 1;
+}
+
+function equal(a: number, b: number) {
+  return defaultCompare(a, b) === 0;
+}
+
+function lessThan(a: number, b: number) {
+  return defaultCompare(a, b) < 0;
+}
+
+function lessThanOrEqual(a: number, b: number) {
+  return lessThan(a, b) || equal(a, b);
+}
+
 export function comparePartialString(fullStr: string, partialStr: string) {
   return fullStr.indexOf(partialStr) !== -1;
 }
@@ -84,7 +101,66 @@ export function factorialRecursiveTCO(number: number, result = 1) {
     : factorialRecursiveTCO(number - 1, number * result);
 }
 
-// implement merge sort
-// implement binary search
+export function sortNumImpure(list: Array<number>) {
+  return list.sort((a, b) => a - b);
+}
 
-export function binarySearch(arr, value) {}
+export function binarySearch(sortedList: Array<number>, number: number) {
+  let max = sortedList.length - 1;
+  let min = 0;
+  let mid = 0;
+
+  while (min <= max) {
+    mid = Math.floor((max + min) / 2);
+
+    if (sortedList[mid] === number) {
+      return mid;
+    } else if (sortedList[mid] < number) {
+      min = mid + 1;
+    } else {
+      max = mid - 1;
+    }
+  }
+
+  return -1;
+}
+
+export function mergeSort(list: Array<number>) {
+  if (list.length <= 1) return list;
+
+  const midIndex = Math.floor(list.length / 2); // Split array on two halves.
+
+  // Sort two halves of split array
+  const leftSorted = mergeSort(list.slice(0, midIndex));
+  const rightSorted = mergeSort(list.slice(midIndex, list.length));
+
+  return mergeSortedArrays(leftSorted, rightSorted);
+}
+
+export function mergeSortedArrays(left: Array<number>, right: Array<number>) {
+  let sortedList = [];
+  let minimumItem = null;
+
+  // In case if arrays are not of size 1.
+  while (left.length && right.length) {
+    // Find minimum element of two arrays.
+    minimumItem = lessThanOrEqual(left[0], right[0])
+      ? left.shift()
+      : right.shift();
+
+    // Push the minimum element of two arrays to the sorted array.
+    sortedList.push(minimumItem);
+  }
+
+  // If one of two array still have elements we need to just concatenate
+  // this element to the sorted array since it is already sorted.
+  if (left.length) {
+    sortedList = sortedList.concat(left);
+  }
+
+  if (right.length) {
+    sortedList = sortedList.concat(right);
+  }
+
+  return sortedList;
+}
