@@ -1,5 +1,4 @@
 const CopyPlugin = require('copy-webpack-plugin');
-// const webpack = require('webpack');
 const path = require('path');
 const srcFolder = (str) => path.join(__dirname, '../src/' + str);
 const dirFolder = (str) => path.join(__dirname, str);
@@ -35,12 +34,6 @@ module.exports = {
       },
     ],
   },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
-  },
-  plugins: [
-    // exclude locale files in moment
-    // new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new CopyPlugin([{ from: '.', to: '../' }], { context: 'public' }),
-  ],
+  resolve: { extensions: ['.ts', '.tsx', '.js'] },
+  plugins: [new CopyPlugin([{ from: '.', to: '../' }], { context: 'public' })],
 };
