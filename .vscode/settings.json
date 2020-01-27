@@ -14,13 +14,9 @@
   "editor.formatOnSave": true,
   "editor.rulers": [80],
   "workbench.colorCustomizations": {
-    "editorRuler.foreground": "#4a0a63"
+    "editorRuler.foreground": "#4a0a63",
+    "statusBar.background": "#220031"
   },
   "code-runner.clearPreviousOutput": true,
-  "cSpell.words": [
-    "Interop",
-    "XING",
-    "artdeco",
-    "linkedin"
-  ]
+  "cSpell.words": ["Interop", "XING", "artdeco", "linkedin"]
 }

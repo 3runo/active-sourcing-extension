@@ -7,6 +7,7 @@ import {
   getDataFromCodeTag,
 } from './helpers';
 import { nodeListToArray, NodeList, getTextNodes } from './helpers/pure';
+import { clearLinkedInTitle } from './helpers/linkedin';
 
 const d: Document = window.document;
 const respond = browser.runtime.sendMessage;
@@ -37,7 +38,7 @@ function reactToContactInfoChanges(
 }
 
 function scanLinkedIn() {
-  const profileName = d.title.replace('| LinkedIn', '').trim();
+  const profileName = clearLinkedInTitle(d.title);
   const $contactSeeMoreLink: HTMLElement = d.querySelector('a[data-control-name="contact_see_more"]'); // prettier-ignore
   const $contactObservedNode = d.querySelector('#artdeco-modal-outlet');
   const domJsonData = getDataFromCodeTag(d.querySelectorAll('body > code'));

@@ -19,20 +19,45 @@ body {
 }
 .content {
   padding: 0 10px;
-  overflow-x: auto;
+}
+.alignRight {
+  text-align: right;
+  margin-left: auto;
+}
+
+/* form */
+.formGroup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.formGroup label {
+  font-weight: 600;
+  font-size: 14px;
+  flex: 0 1 25%;
+}
+
+.formGroup input,
+.formGroup textarea {
+  flex: 1 1 auto;
+  padding: 4px;
+  resize: none;
+  font-family: inherit;
 }
 
 /* button */
 .Btn {
-  background-color: #c041af;
+  background-color: #0073b1;
   color: #fff;
   border-radius: 2px;
   border: none;
   cursor: pointer;
   display: inline-flex;
   font-family: inherit;
-  font-size: 1rem;
-  padding: 0.3rem 0.7rem;
+  font-size: 0.9rem;
+  padding: 0.4rem 1rem;
   line-height: 1;
 }
 

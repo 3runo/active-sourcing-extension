@@ -1,6 +1,11 @@
 import { curryN, compose } from 'lodash/fp';
 import { domainWhiteList } from './constants';
-import { concatStringList, findWhiteListedString, getTextNodes } from './pure';
+import {
+  concatStringList,
+  debug,
+  findWhiteListedString,
+  getTextNodes,
+} from './pure';
 import {
   categorizeContactInfoText,
   contactInfoTextsToObj,
@@ -14,6 +19,7 @@ const findAllowedString = curryN(2, findWhiteListedString)(domainWhiteList);
 const isDomainAllowed = compose([Boolean, findAllowedString]);
 const getContactInfoText = compose([
   contactInfoTextsToObj,
+  debug,
   categorizeContactInfoText,
   getTextNodes,
 ]);

@@ -75,3 +75,10 @@ export function serializeDomData(
       }
     : undefined;
 }
+
+export function clearLinkedInTitle(string: string) {
+  return string
+    .replace('| LinkedIn', '')
+    .replace(/ *\([^)]*\) */g, '')
+    .trim();
+}
