@@ -2,8 +2,10 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import * as browser from 'webextension-polyfill';
 import { activeTab } from './helpers/constants';
-import { isDomainAllowed } from './helpers';
+import { createFormPayload, isDomainAllowed } from './helpers';
 import { TLCodeData } from './helpers/linkedin';
+import Field from './components/uncontrolled-field/';
+import { postSaveProfile } from './helpers/api';
 
 const fetchTabs = browser.tabs.query;
 const messageListener = browser.runtime.onMessage.addListener;
@@ -84,9 +86,14 @@ class PopupApp extends React.Component<{}, State> {
     });
   };
 
-  onFormSubmit = (e) => {
+  onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e.target);
+    const form = e.currentTarget;
+    const payload = createFormPayload(form.querySelectorAll('[name*="input"]'));
+
+    postSaveProfile(payload)
+      .then(console.log)
+      .catch(console.error);
   };
 
   render() {
@@ -115,67 +122,53 @@ class PopupApp extends React.Component<{}, State> {
           </div>
           {this.state.profileName != null && (
             <form onSubmit={this.onFormSubmit}>
-              <div className="formGroup">
-                <label htmlFor="name">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  defaultValue={defProfileName(this.state)}
-                />
-              </div>
+              <Field
+                label="Name"
+                name="input-name"
+                value={defProfileName(this.state)}
+              />
               {email != null && (
-                <div className="formGroup">
-                  <label htmlFor="email">Email</label>
-                  <input type="text" name="email" defaultValue={email} />
-                </div>
+                <Field label="Email" name="input-email" value={email} />
               )}
               {occupation != null && (
-                <div className="formGroup">
-                  <label htmlFor="occupation">Occupation</label>
-                  <input
-                    type="text"
-                    name="occupation"
-                    defaultValue={occupation}
-                  />
-                </div>
+                <Field
+                  label="Occupation"
+                  name="input-occupation"
+                  value={occupation}
+                />
               )}
               {birthday != null && (
-                <div className="formGroup">
-                  <label htmlFor="birthday">birthday</label>
-                  <input type="text" name="birthday" defaultValue={birthday} />
-                </div>
+                <Field
+                  label="Birthday"
+                  name="input-birthday"
+                  value={birthday}
+                />
               )}
               {yourProfile != null && (
-                <div className="formGroup">
-                  <label htmlFor="LinkedIn">Profile</label>
-                  <input
-                    type="text"
-                    name="profile"
-                    defaultValue={yourProfile}
-                  />
-                </div>
+                <Field
+                  label="Profile"
+                  name="input-profile"
+                  value={yourProfile}
+                />
               )}
               {twitter != null && (
-                <div className="formGroup">
-                  <label htmlFor="Twitter">Twitter</label>
-                  <input type="text" name="Twitter" defaultValue={twitter} />
-                </div>
+                <Field label="Twitter" name="input-twitter" value={twitter} />
               )}
-              {im != null && (
-                <div className="formGroup">
-                  <label htmlFor="link-2">link-2</label>
-                  <input type="text" name="link-2" defaultValue={im} />
-                </div>
-              )}
+              {im != null && <Field label="IM" name="input-im" value={im} />}
               {about != null && (
                 <div className="formGroup">
-                  <label htmlFor="about">About</label>
-                  <textarea name="about" id="" rows={2} defaultValue={about} />
+                  <label htmlFor="input-about">About</label>
+                  <textarea
+                    name="input-about"
+                    id=""
+                    rows={2}
+                    defaultValue={about}
+                  />
                 </div>
               )}
               <div className="formGroup">
                 <button className="Btn alignRight" type="submit">
-                  Next
+                  Save
                 </button>
               </div>
             </form>
