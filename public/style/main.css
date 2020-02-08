@@ -47,6 +47,12 @@ body {
   font-family: inherit;
 }
 
+.feedBackMessage {
+  padding: 10px;
+  background-color: #f3f6f8;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 /* button */
 .Btn {
   background-color: #0073b1;

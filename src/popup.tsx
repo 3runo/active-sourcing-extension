@@ -2,36 +2,24 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import * as browser from 'webextension-polyfill';
 import { activeTab } from './helpers/constants';
-import { createFormPayload, isDomainAllowed } from './helpers';
-import { TLCodeData } from './helpers/linkedin';
-import Field from './components/uncontrolled-field/';
+import {
+  createFormPayload,
+  isDomainAllowed,
+  getFullName,
+  cleanedState,
+} from './helpers';
 import { postSaveProfile } from './helpers/api';
+import { Tabs, State } from './types/state';
+import Field from './components/uncontrolled-field/';
 
 const fetchTabs = browser.tabs.query;
 const messageListener = browser.runtime.onMessage.addListener;
-
-// type RMEvent = React.MouseEvent<HTMLButtonElement, MouseEvent>;
-type Tabs = Array<chrome.tabs.Tab>;
-type State = LProfile & { isScanDisabled: boolean };
-type Response = LProfile | { err: string };
-type LProfile = TLCodeData & {
-  about?: string;
-  birthday?: string;
-  connected?: string;
-  education?: string | Array<string>;
-  email?: string;
-  im?: string;
-  location?: string;
-  profileName?: string;
-  twitter?: string;
-  yourProfile?: string;
+const hasProp = Object.prototype.hasOwnProperty;
+const initialState = {
+  isProcessing: false,
+  isScanDisabled: true,
+  msg: '',
 };
-
-const initialState = { isScanDisabled: true };
-
-function defProfileName({ lastName, firstName, profileName }: State) {
-  return firstName && lastName ? `${firstName} ${lastName}` : profileName;
-}
 
 class PopupApp extends React.Component<{}, State> {
   state: State = initialState;
@@ -42,9 +30,8 @@ class PopupApp extends React.Component<{}, State> {
     });
 
     // Receive the results of scan process
-    // ToDo: revisit data typing here
-    messageListener((data: any) => {
-      if (Object.prototype.hasOwnProperty.call(data, 'err')) {
+    messageListener((data: Record<string, any>) => {
+      if (hasProp.call(data, 'err')) {
         console.error(data.err);
         return;
       }
@@ -91,9 +78,15 @@ class PopupApp extends React.Component<{}, State> {
     const form = e.currentTarget;
     const payload = createFormPayload(form.querySelectorAll('[name*="input"]'));
 
+    this.setState({ isProcessing: true });
+
     postSaveProfile(payload)
-      .then(console.log)
-      .catch(console.error);
+      .then(() => this.setState({ ...cleanedState, msg: 'success message' }))
+      .catch((res) => this.setState({ msg: res.message || 'error message' }))
+      .then(() => {
+        this.setState({ isProcessing: false });
+        window.setTimeout(() => this.setState({ msg: '' }), 2000);
+      });
   };
 
   render() {
@@ -102,11 +95,14 @@ class PopupApp extends React.Component<{}, State> {
       birthday,
       email,
       im,
+      isProcessing,
+      isScanDisabled,
+      msg,
       occupation,
       twitter,
       yourProfile,
     } = this.state;
-    console.log(this.state);
+
     return (
       <>
         <h3 className="title">Active Sourcing</h3>
@@ -115,7 +111,7 @@ class PopupApp extends React.Component<{}, State> {
             <button
               className="Btn gapB3"
               onClick={this.onScanDomainClick}
-              disabled={this.state.isScanDisabled}
+              disabled={isScanDisabled || isProcessing}
             >
               Scan profile
             </button>
@@ -125,7 +121,7 @@ class PopupApp extends React.Component<{}, State> {
               <Field
                 label="Name"
                 name="input-name"
-                value={defProfileName(this.state)}
+                value={getFullName(this.state)}
               />
               {email != null && (
                 <Field label="Email" name="input-email" value={email} />
@@ -167,12 +163,17 @@ class PopupApp extends React.Component<{}, State> {
                 </div>
               )}
               <div className="formGroup">
-                <button className="Btn alignRight" type="submit">
+                <button
+                  className="Btn alignRight"
+                  disabled={isScanDisabled || isProcessing}
+                  type="submit"
+                >
                   Save
                 </button>
               </div>
             </form>
           )}
+          {msg.length > 0 && <div className="feedBackMessage">{msg}</div>}
         </div>
       </>
     );
